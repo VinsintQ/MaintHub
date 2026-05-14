@@ -2,7 +2,7 @@ package com.MaintHub.demo.security;
 
 
 
-import com.Cinema.App.model.User;
+import com.MaintHub.demo.model.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

@@ -3,8 +3,9 @@ package com.MaintHub.demo.security;
 
 
 
-import com.Cinema.App.model.User;
-import com.Cinema.App.service.UserService;
+
+import com.MaintHub.demo.model.User;
+import com.MaintHub.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.security.core.userdetails.UserDetails;
