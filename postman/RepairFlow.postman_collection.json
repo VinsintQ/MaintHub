@@ -1,0 +1,962 @@
+{
+  "info": {
+    "_postman_id": "5b684f8f-8ab7-4f2b-bf03-4be8e3f7f5d1",
+    "name": "RepairFlow API",
+    "description": "Postman collection for the RepairFlow Spring Boot backend. Run Login to save jwtToken automatically from LoginResponse.message.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{jwtToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register Staff User",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userName\": \"Staff User\",\n  \"emailAddress\": \"{{staffEmail}}\",\n  \"password\": \"{{password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{baseUrl}}/auth/users/register"
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.message && !data.message.startsWith('Error')) {",
+                  "  pm.collectionVariables.set('jwtToken', data.message);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{loginEmail}}\",\n  \"password\": \"{{password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{baseUrl}}/auth/users/login"
+          }
+        },
+        {
+          "name": "Verify Email",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/auth/users/register/verify?token={{verifyToken}}"
+          }
+        },
+        {
+          "name": "Request Password Reset",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"emailAddress\": \"{{loginEmail}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{baseUrl}}/auth/users/resetPassword"
+          }
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"oldPass\": \"{{password}}\",\n  \"newPass\": \"{{newPassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{baseUrl}}/auth/users/change-password"
+          }
+        },
+        {
+          "name": "Soft Delete User",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": "{{baseUrl}}/auth/users/{{userId}}/soft-delete"
+          }
+        },
+        {
+          "name": "Promote User To Admin",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": "{{baseUrl}}/auth/users/{{userId}}/promote"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Equipment Categories",
+      "item": [
+        {
+          "name": "Create Category",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.id) pm.collectionVariables.set('categoryId', data.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Heavy Equipment\",\n  \"description\": \"Cranes, forklifts, generators, and similar assets\",\n  \"requiresRegularInspection\": true,\n  \"inspectionIntervalDays\": 90\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{baseUrl}}/api/equipment-categories"
+          }
+        },
+        {
+          "name": "Get Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/equipment-categories"
+          }
+        },
+        {
+          "name": "Get Category By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/equipment-categories/{{categoryId}}"
+          }
+        },
+        {
+          "name": "Update Category",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Heavy Equipment\",\n  \"description\": \"Updated category description\",\n  \"requiresRegularInspection\": true,\n  \"inspectionIntervalDays\": 120\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{baseUrl}}/api/equipment-categories/{{categoryId}}"
+          }
+        },
+        {
+          "name": "Delete Category",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/api/equipment-categories/{{categoryId}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Equipment",
+      "item": [
+        {
+          "name": "Create Equipment",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.id) pm.collectionVariables.set('equipmentId', data.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Forklift 01\",\n  \"serialNumber\": \"FL-001-{{randomInt}}\",\n  \"description\": \"Warehouse forklift\",\n  \"location\": \"Warehouse A\",\n  \"status\": \"ACTIVE\",\n  \"conditionLevel\": 8,\n  \"purchaseDate\": \"2025-01-15\",\n  \"warrantyExpiryDate\": \"2027-01-15\",\n  \"categoryId\": {{categoryId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{baseUrl}}/api/equipment"
+          }
+        },
+        {
+          "name": "Get Equipment",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/equipment"
+          }
+        },
+        {
+          "name": "Get Equipment By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/equipment/{{equipmentId}}"
+          }
+        },
+        {
+          "name": "Update Equipment",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Forklift 01\",\n  \"serialNumber\": \"FL-001-UPDATED\",\n  \"description\": \"Updated warehouse forklift\",\n  \"location\": \"Warehouse B\",\n  \"status\": \"ACTIVE\",\n  \"conditionLevel\": 9,\n  \"purchaseDate\": \"2025-01-15\",\n  \"warrantyExpiryDate\": \"2027-01-15\",\n  \"categoryId\": {{categoryId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{baseUrl}}/api/equipment/{{equipmentId}}"
+          }
+        },
+        {
+          "name": "Retire Equipment",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/api/equipment/{{equipmentId}}"
+          }
+        },
+        {
+          "name": "Get Equipment By Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/equipment/status/{{equipmentStatus}}"
+          }
+        },
+        {
+          "name": "Get Equipment By Category",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/equipment/category/{{categoryId}}"
+          }
+        },
+        {
+          "name": "Get Equipment Due Inspection",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/equipment/due-inspection"
+          }
+        },
+        {
+          "name": "Get Equipment Warranty Expiring",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/equipment/warranty-expiring"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Damage Reports",
+      "item": [
+        {
+          "name": "Create Damage Report",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.id) pm.collectionVariables.set('damageReportId', data.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"equipmentId\": {{equipmentId}},\n  \"description\": \"Hydraulic leak near lifting arm\",\n  \"severity\": \"HIGH\",\n  \"damagePhotoUrl\": \"https://example.com/photos/damage-1.jpg\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{baseUrl}}/api/damage-reports"
+          }
+        },
+        {
+          "name": "Get Damage Reports",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/damage-reports"
+          }
+        },
+        {
+          "name": "Get Damage Report By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/damage-reports/{{damageReportId}}"
+          }
+        },
+        {
+          "name": "Get My Damage Reports",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/damage-reports/my-reports"
+          }
+        },
+        {
+          "name": "Review Damage Report",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Damage verified by admin\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{baseUrl}}/api/damage-reports/{{damageReportId}}/review"
+          }
+        },
+        {
+          "name": "Reject Damage Report",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Duplicate report\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{baseUrl}}/api/damage-reports/{{damageReportId}}/reject"
+          }
+        },
+        {
+          "name": "Assign Technician",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.maintenanceTaskId) pm.collectionVariables.set('maintenanceTaskId', data.maintenanceTaskId);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"technicianId\": {{technicianId}},\n  \"estimatedCost\": 75.50\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{baseUrl}}/api/damage-reports/{{damageReportId}}/assign-technician"
+          }
+        },
+        {
+          "name": "Upload Damage Photo",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"damagePhotoUrl\": \"https://example.com/photos/damage-updated.jpg\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{baseUrl}}/api/damage-reports/{{damageReportId}}/upload-photo"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Maintenance Tasks",
+      "item": [
+        {
+          "name": "Get Maintenance Tasks",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/maintenance-tasks"
+          }
+        },
+        {
+          "name": "Get Maintenance Task By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/maintenance-tasks/{{maintenanceTaskId}}"
+          }
+        },
+        {
+          "name": "Get My Maintenance Tasks",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/maintenance-tasks/my-tasks"
+          }
+        },
+        {
+          "name": "Start Maintenance Task",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": "{{baseUrl}}/api/maintenance-tasks/{{maintenanceTaskId}}/start"
+          }
+        },
+        {
+          "name": "Mark Waiting For Parts",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Waiting for replacement hydraulic hose\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{baseUrl}}/api/maintenance-tasks/{{maintenanceTaskId}}/waiting-for-parts"
+          }
+        },
+        {
+          "name": "Complete Maintenance Task",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"repairNotes\": \"Replaced damaged hose and tested pressure\",\n  \"actualCost\": 82.25\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{baseUrl}}/api/maintenance-tasks/{{maintenanceTaskId}}/complete"
+          }
+        },
+        {
+          "name": "Cancel Maintenance Task",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Maintenance task cancelled by admin\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{baseUrl}}/api/maintenance-tasks/{{maintenanceTaskId}}/cancel"
+          }
+        },
+        {
+          "name": "Approve Repair Cost",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": "{{baseUrl}}/api/maintenance-tasks/{{maintenanceTaskId}}/approve-cost"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Inspections",
+      "item": [
+        {
+          "name": "Create Inspection",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.id) pm.collectionVariables.set('inspectionId', data.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"maintenanceTaskId\": {{maintenanceTaskId}},\n  \"result\": \"PASSED\",\n  \"notes\": \"Equipment passed final inspection\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{baseUrl}}/api/inspections"
+          }
+        },
+        {
+          "name": "Get Inspections",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/inspections"
+          }
+        },
+        {
+          "name": "Get Inspection By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/inspections/{{inspectionId}}"
+          }
+        },
+        {
+          "name": "Get Inspections By Equipment",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/inspections/equipment/{{equipmentId}}"
+          }
+        },
+        {
+          "name": "Pass Inspection",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"notes\": \"Passed after final safety check\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{baseUrl}}/api/inspections/{{inspectionId}}/pass"
+          }
+        },
+        {
+          "name": "Fail Inspection",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"notes\": \"Leak still visible under load\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{baseUrl}}/api/inspections/{{inspectionId}}/fail"
+          }
+        },
+        {
+          "name": "Mark Unsafe",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"notes\": \"Equipment is unsafe for operation\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{baseUrl}}/api/inspections/{{inspectionId}}/mark-unsafe"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Spare Part Requests",
+      "item": [
+        {
+          "name": "Create Spare Part Request",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.id) pm.collectionVariables.set('sparePartRequestId', data.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"maintenanceTaskId\": {{maintenanceTaskId}},\n  \"partName\": \"Hydraulic hose\",\n  \"quantity\": 1,\n  \"estimatedPrice\": 25.75\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{baseUrl}}/api/spare-part-requests"
+          }
+        },
+        {
+          "name": "Get Spare Part Requests",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/spare-part-requests"
+          }
+        },
+        {
+          "name": "Get Spare Part Request By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/spare-part-requests/{{sparePartRequestId}}"
+          }
+        },
+        {
+          "name": "Get Spare Parts By Maintenance Task",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/spare-part-requests/maintenance-task/{{maintenanceTaskId}}"
+          }
+        },
+        {
+          "name": "Approve Spare Part Request",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": "{{baseUrl}}/api/spare-part-requests/{{sparePartRequestId}}/approve"
+          }
+        },
+        {
+          "name": "Reject Spare Part Request",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": "{{baseUrl}}/api/spare-part-requests/{{sparePartRequestId}}/reject"
+          }
+        },
+        {
+          "name": "Mark Spare Part Ordered",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": "{{baseUrl}}/api/spare-part-requests/{{sparePartRequestId}}/mark-ordered"
+          }
+        },
+        {
+          "name": "Mark Spare Part Received",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": "{{baseUrl}}/api/spare-part-requests/{{sparePartRequestId}}/mark-received"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Status History",
+      "item": [
+        {
+          "name": "Get Equipment Status History",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/equipment/{{equipmentId}}/status-history"
+          }
+        },
+        {
+          "name": "Get All Status History",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/status-history"
+          }
+        },
+        {
+          "name": "Get Status History By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/status-history/{{statusHistoryId}}"
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "jwtToken",
+      "value": ""
+    },
+    {
+      "key": "loginEmail",
+      "value": "staff@example.com"
+    },
+    {
+      "key": "staffEmail",
+      "value": "staff@example.com"
+    },
+    {
+      "key": "password",
+      "value": "Password123!"
+    },
+    {
+      "key": "newPassword",
+      "value": "Password456!"
+    },
+    {
+      "key": "verifyToken",
+      "value": "paste-email-token-here"
+    },
+    {
+      "key": "userId",
+      "value": "1"
+    },
+    {
+      "key": "technicianId",
+      "value": "3"
+    },
+    {
+      "key": "categoryId",
+      "value": "1"
+    },
+    {
+      "key": "equipmentId",
+      "value": "1"
+    },
+    {
+      "key": "equipmentStatus",
+      "value": "ACTIVE"
+    },
+    {
+      "key": "damageReportId",
+      "value": "1"
+    },
+    {
+      "key": "maintenanceTaskId",
+      "value": "1"
+    },
+    {
+      "key": "inspectionId",
+      "value": "1"
+    },
+    {
+      "key": "sparePartRequestId",
+      "value": "1"
+    },
+    {
+      "key": "statusHistoryId",
+      "value": "1"
+    }
+  ]
+}

@@ -9,7 +9,10 @@ import jakarta.persistence.*;
 import lombok.*;
 
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -47,6 +50,52 @@ public class User {
 
     @Column(nullable = false)
     private boolean isActive = true;
+
+    @Column(updatable = false)
+    private LocalDateTime createdAt;
+
+    @JsonIgnore
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "reportedBy")
+    private List<DamageReport> damageReports = new ArrayList<>();
+
+    @JsonIgnore
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "technician")
+    private List<MaintenanceTask> assignedMaintenanceTasks = new ArrayList<>();
+
+    @JsonIgnore
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "inspector")
+    private List<Inspection> inspections = new ArrayList<>();
+
+    @JsonIgnore
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "requestedBy")
+    private List<SparePartRequest> requestedSpareParts = new ArrayList<>();
+
+    @JsonIgnore
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "approvedBy")
+    private List<SparePartRequest> approvedSpareParts = new ArrayList<>();
+
+    @JsonIgnore
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "changedBy")
+    private List<EquipmentStatusHistory> equipmentStatusHistory = new ArrayList<>();
+
+    @PrePersist
+    public void onCreate() {
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();
+        }
+    }
 
     @JsonIgnore
     public String getPassword(){

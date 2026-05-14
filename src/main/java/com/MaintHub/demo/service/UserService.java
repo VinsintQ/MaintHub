@@ -60,9 +60,9 @@ public class UserService {
         if (!userRepository.existsByEmailAddress(userObject.getEmailAddress())){
             userObject.setPassword(passwordEncoder.encode(userObject.getPassword()));
 
-            Role userRole = roleRepository.findByName(RoleName.ROLE_USER).orElseThrow(
-                    ()->    new RuntimeException("ROLE_USER does not exist")
-            );
+            Role userRole = roleRepository.findByName(RoleName.ROLE_STAFF)
+                    .or(() -> roleRepository.findByName(RoleName.ROLE_USER))
+                    .orElseThrow(() -> new RuntimeException("ROLE_STAFF does not exist"));
             userObject.getRoles().add(userRole);
             User result = userRepository.save(userObject);
             sendConfirmationEmail(userObject);
@@ -173,12 +173,12 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        Role adminRole = roleRepository.findById(2L)
+        Role adminRole = roleRepository.findByName(RoleName.ROLE_ADMIN)
                 .orElseThrow(() -> new RuntimeException("ADMIN role not found"));
 
 
         boolean alreadyAdmin = user.getRoles().stream()
-                .anyMatch(role -> role.getId().equals(2L));
+                .anyMatch(role -> role.getName() == RoleName.ROLE_ADMIN);
 
         if (alreadyAdmin) {
             throw new RuntimeException("User is already an ADMIN");

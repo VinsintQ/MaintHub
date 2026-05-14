@@ -1,0 +1,8 @@
+.git
+.idea
+target
+*.iml
+*.log
+Dockerfile
+docker-compose.yml
+postman
