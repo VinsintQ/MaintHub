@@ -1,29 +1,99 @@
-# MaintHub
+# RepairFlow
 
-<!-- Update 1 -->
+RepairFlow is an Equipment Damage and Maintenance Management System built with Spring Boot. It helps organizations track equipment, report damage, assign technicians, manage maintenance tasks, request spare parts, inspect repaired equipment, and keep a full history of equipment status changes.
 
-<!-- Update 3 -->
+The backend includes JWT authentication, role-based authorization, email verification, and workflow modules for staff, admins, technicians, and inspectors. The system is designed so equipment status changes happen through service workflows and are recorded automatically in status history.
 
-<!-- Update 10 -->
+## Tools and Technologies
 
-<!-- Update 11 -->
+- Java 17
+- Spring Boot 3.2.5
+- Spring Web
+- Spring Security
+- JWT authentication
+- Spring Data JPA
+- Hibernate
+- PostgreSQL
+- Maven
+- Lombok
+- Jakarta Bean Validation
+- Spring Mail
+- Docker and Docker Compose
+- Postman
 
-<!-- Update 12 -->
+## General Approach
 
-<!-- Update 20 -->
+The project was built around the existing authentication system instead of replacing it. The auth layer already handled registration, login, JWT generation, role-based access, and email verification, so the maintenance modules were added around that structure. Existing users and roles were extended to support the RepairFlow workflow roles: admin, staff, technician, and inspector.
 
-<!-- Update 27 -->
+The main backend design uses a service-first workflow approach. Controllers receive DTOs, services enforce business rules, repositories handle persistence, and entities model the relationships between equipment, reports, tasks, inspections, spare part requests, and status history. Equipment status is not meant to be changed directly from controllers; service methods update it and create an `EquipmentStatusHistory` record at the same time.
 
-<!-- Update 28 -->
 
-<!-- Update 30 -->
 
-<!-- Enhancement 1 -->
 
-<!-- Enhancement 2 -->
 
-<!-- Enhancement 3 -->
 
-<!-- Enhancement 4 -->
+## Installation
 
-<!-- Enhancement 5 -->
+### Requirements
+
+- Java 17 or later
+- Maven, or the included Maven wrapper
+- PostgreSQL
+- Docker Desktop, optional
+- Postman, optional for API testing
+
+### Run Locally
+
+1. Create a PostgreSQL database.
+
+```sql
+CREATE DATABASE last;
+```
+
+2. Update database settings in:
+
+```text
+src/main/resources/application.properties
+```
+
+3. Run the project:
+
+```powershell
+.\mvnw.cmd spring-boot:run
+```
+
+4. Run tests:
+
+```powershell
+.\mvnw.cmd test
+```
+
+### Run with Docker
+
+1. Copy the example environment file if you want custom values:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+2. Start the API and PostgreSQL:
+
+```powershell
+docker compose up --build
+```
+
+3. The API will run at:
+
+```text
+http://localhost:8080
+```
+
+PostgreSQL is exposed on host port `5433` by default.
+
+### Postman Collection
+
+Import this file into Postman:
+
+[RepairFlow Postman Collection](./postman/RepairFlow.postman_collection.json)
+
+The collection uses `{{baseUrl}}` and `{{jwtToken}}`. After running the login request, the JWT token is saved automatically into the collection variables.
