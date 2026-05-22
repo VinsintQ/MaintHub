@@ -28,7 +28,7 @@ public class InspectionController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('INSPECTOR')")
+    @PreAuthorize("hasAnyRole('ADMIN','INSPECTOR')")
     public ResponseEntity<InspectionResponse> create(@Valid @RequestBody InspectionCreateRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(inspectionService.create(request));
     }
@@ -52,7 +52,7 @@ public class InspectionController {
     }
 
     @PatchMapping("/{id}/pass")
-    @PreAuthorize("hasRole('INSPECTOR')")
+    @PreAuthorize("hasAnyRole('ADMIN','INSPECTOR')")
     public ResponseEntity<InspectionResponse> pass(
             @PathVariable Long id,
             @RequestBody(required = false) InspectionDecisionRequest request
@@ -61,7 +61,7 @@ public class InspectionController {
     }
 
     @PatchMapping("/{id}/fail")
-    @PreAuthorize("hasRole('INSPECTOR')")
+    @PreAuthorize("hasAnyRole('ADMIN','INSPECTOR')")
     public ResponseEntity<InspectionResponse> fail(
             @PathVariable Long id,
             @RequestBody(required = false) InspectionDecisionRequest request
@@ -70,7 +70,7 @@ public class InspectionController {
     }
 
     @PatchMapping("/{id}/mark-unsafe")
-    @PreAuthorize("hasRole('INSPECTOR')")
+    @PreAuthorize("hasAnyRole('ADMIN','INSPECTOR')")
     public ResponseEntity<InspectionResponse> markUnsafe(
             @PathVariable Long id,
             @RequestBody(required = false) InspectionDecisionRequest request

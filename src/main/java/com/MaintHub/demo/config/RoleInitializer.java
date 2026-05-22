@@ -4,6 +4,7 @@ import com.MaintHub.demo.model.Role;
 import com.MaintHub.demo.model.RoleName;
 import com.MaintHub.demo.repository.RoleRepository;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
@@ -12,6 +13,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 @Component
+@Order(1)
 public class RoleInitializer implements CommandLineRunner {
     private final RoleRepository roleRepository;
     private final DataSource dataSource;

@@ -34,6 +34,31 @@ The main backend design uses a service-first workflow approach. Controllers rece
 
 ## Installation
 
+## Seed Data
+
+The project includes an automatic seed file:
+
+```text
+src/main/java/com/MaintHub/demo/config/DatabaseSeeder.java
+```
+
+It runs when the application starts and inserts default roles, users, equipment categories, and sample equipment if they do not already exist.
+
+Default seeded users:
+
+| Role | Email | Password |
+| --- | --- | --- |
+| Admin | admin@repairflow.com | Password123! |
+| Staff | staff@repairflow.com | Password123! |
+| Technician | technician@repairflow.com | Password123! |
+| Inspector | inspector@repairflow.com | Password123! |
+
+Seeded equipment categories:
+
+- Heavy Equipment
+- Safety Equipment
+- IT Equipment
+
 ### Requirements
 
 - Java 17 or later

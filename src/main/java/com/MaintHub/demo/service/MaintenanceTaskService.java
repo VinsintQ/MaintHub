@@ -51,6 +51,9 @@ public class MaintenanceTaskService {
     @Transactional(readOnly = true)
     public List<MaintenanceTaskResponse> getMyTasks() {
         User technician = currentUserService.getCurrentUser();
+        if (currentUserService.isAdmin(technician)) {
+            return getAll();
+        }
         return maintenanceTaskRepository.findByTechnicianId(technician.getId()).stream()
                 .map(MaintenanceTaskResponse::from)
                 .toList();
@@ -172,7 +175,7 @@ public class MaintenanceTaskService {
 
     private void ensureAssignedTechnician(MaintenanceTask task) {
         User user = currentUserService.getCurrentUser();
-        if (!task.getTechnician().getId().equals(user.getId())) {
+        if (!currentUserService.isAdmin(user) && !task.getTechnician().getId().equals(user.getId())) {
             throw new UnauthorizedActionException("Only the assigned technician can update this maintenance task");
         }
     }

@@ -38,19 +38,19 @@ public class MaintenanceTaskController {
     }
 
     @GetMapping("/my-tasks")
-    @PreAuthorize("hasRole('TECHNICIAN')")
+    @PreAuthorize("hasAnyRole('ADMIN','TECHNICIAN')")
     public ResponseEntity<List<MaintenanceTaskResponse>> getMyTasks() {
         return ResponseEntity.ok(maintenanceTaskService.getMyTasks());
     }
 
     @PatchMapping("/{id}/start")
-    @PreAuthorize("hasRole('TECHNICIAN')")
+    @PreAuthorize("hasAnyRole('ADMIN','TECHNICIAN')")
     public ResponseEntity<MaintenanceTaskResponse> start(@PathVariable Long id) {
         return ResponseEntity.ok(maintenanceTaskService.start(id));
     }
 
     @PatchMapping("/{id}/waiting-for-parts")
-    @PreAuthorize("hasRole('TECHNICIAN')")
+    @PreAuthorize("hasAnyRole('ADMIN','TECHNICIAN')")
     public ResponseEntity<MaintenanceTaskResponse> markWaitingForParts(
             @PathVariable Long id,
             @RequestBody(required = false) WorkflowReasonRequest request
@@ -59,7 +59,7 @@ public class MaintenanceTaskController {
     }
 
     @PatchMapping("/{id}/complete")
-    @PreAuthorize("hasRole('TECHNICIAN')")
+    @PreAuthorize("hasAnyRole('ADMIN','TECHNICIAN')")
     public ResponseEntity<MaintenanceTaskResponse> complete(
             @PathVariable Long id,
             @Valid @RequestBody MaintenanceTaskCompleteRequest request

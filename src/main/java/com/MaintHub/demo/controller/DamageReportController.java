@@ -30,7 +30,7 @@ public class DamageReportController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('STAFF','USER')")
+    @PreAuthorize("hasAnyRole('STAFF','USER','ADMIN')")
     public ResponseEntity<DamageReportResponse> create(@Valid @RequestBody DamageReportCreateRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(damageReportService.create(request));
     }
@@ -48,7 +48,7 @@ public class DamageReportController {
     }
 
     @GetMapping("/my-reports")
-    @PreAuthorize("hasAnyRole('STAFF','USER')")
+    @PreAuthorize("hasAnyRole('STAFF','USER','ADMIN')")
     public ResponseEntity<List<DamageReportResponse>> getMyReports() {
         return ResponseEntity.ok(damageReportService.getMyReports());
     }

@@ -118,7 +118,7 @@ public class SparePartRequestService {
 
     private void ensureAssignedTechnician(MaintenanceTask task) {
         User currentUser = currentUserService.getCurrentUser();
-        if (!task.getTechnician().getId().equals(currentUser.getId())) {
+        if (!currentUserService.isAdmin(currentUser) && !task.getTechnician().getId().equals(currentUser.getId())) {
             throw new UnauthorizedActionException("Only the assigned technician can request spare parts for this task");
         }
     }

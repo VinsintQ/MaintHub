@@ -27,7 +27,7 @@ public class SparePartRequestController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('TECHNICIAN')")
+    @PreAuthorize("hasAnyRole('ADMIN','TECHNICIAN')")
     public ResponseEntity<SparePartRequestResponse> create(@Valid @RequestBody SparePartRequestCreateRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(sparePartRequestService.create(request));
     }

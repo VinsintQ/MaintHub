@@ -94,6 +94,9 @@ public class DamageReportService {
     @Transactional(readOnly = true)
     public List<DamageReportResponse> getMyReports() {
         User reporter = currentUserService.getCurrentUser();
+        if (currentUserService.isAdmin(reporter)) {
+            return getAll();
+        }
         return damageReportRepository.findByReportedById(reporter.getId()).stream()
                 .map(DamageReportResponse::from)
                 .toList();
