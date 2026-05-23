@@ -1,6 +1,5 @@
 package com.MaintHub.demo.service;
 
-import com.MaintHub.demo.dto.request.DamagePhotoUploadRequest;
 import com.MaintHub.demo.dto.request.DamageReportAssignRequest;
 import com.MaintHub.demo.dto.request.DamageReportCreateRequest;
 import com.MaintHub.demo.dto.request.WorkflowReasonRequest;
@@ -22,6 +21,7 @@ import com.MaintHub.demo.repository.MaintenanceTaskRepository;
 import com.MaintHub.demo.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -30,6 +30,7 @@ import java.util.List;
 @Service
 public class DamageReportService {
     private static final BigDecimal REPAIR_APPROVAL_THRESHOLD = new BigDecimal("100");
+    private static final String DAMAGE_REPORT_PHOTO_FOLDER = "mainthub/damage-reports";
 
     private final DamageReportRepository damageReportRepository;
     private final MaintenanceTaskRepository maintenanceTaskRepository;
@@ -37,6 +38,7 @@ public class DamageReportService {
     private final EquipmentService equipmentService;
     private final EquipmentStatusHistoryService statusHistoryService;
     private final CurrentUserService currentUserService;
+    private final CloudinaryService cloudinaryService;
 
     public DamageReportService(
             DamageReportRepository damageReportRepository,
@@ -44,7 +46,8 @@ public class DamageReportService {
             UserRepository userRepository,
             EquipmentService equipmentService,
             EquipmentStatusHistoryService statusHistoryService,
-            CurrentUserService currentUserService
+            CurrentUserService currentUserService,
+            CloudinaryService cloudinaryService
     ) {
         this.damageReportRepository = damageReportRepository;
         this.maintenanceTaskRepository = maintenanceTaskRepository;
@@ -52,10 +55,16 @@ public class DamageReportService {
         this.equipmentService = equipmentService;
         this.statusHistoryService = statusHistoryService;
         this.currentUserService = currentUserService;
+        this.cloudinaryService = cloudinaryService;
     }
 
     @Transactional
     public DamageReportResponse create(DamageReportCreateRequest request) {
+        return create(request, null);
+    }
+
+    @Transactional
+    public DamageReportResponse create(DamageReportCreateRequest request, MultipartFile file) {
         User reporter = currentUserService.getCurrentUser();
         Equipment equipment = equipmentService.findEquipment(request.getEquipmentId());
 
@@ -64,7 +73,9 @@ public class DamageReportService {
         report.setReportedBy(reporter);
         report.setDescription(request.getDescription());
         report.setSeverity(request.getSeverity());
-        report.setDamagePhotoUrl(request.getDamagePhotoUrl());
+        if (file != null && !file.isEmpty()) {
+            report.setDamagePhotoUrl(cloudinaryService.uploadImage(file, DAMAGE_REPORT_PHOTO_FOLDER));
+        }
         DamageReport savedReport = damageReportRepository.save(report);
 
         statusHistoryService.changeStatus(
@@ -168,13 +179,14 @@ public class DamageReportService {
     }
 
     @Transactional
-    public DamageReportResponse uploadPhoto(Long id, DamagePhotoUploadRequest request) {
+    public DamageReportResponse uploadPhoto(Long id, MultipartFile file) {
         DamageReport report = findReport(id);
         User currentUser = currentUserService.getCurrentUser();
         if (!currentUserService.isAdmin(currentUser) && !report.getReportedBy().getId().equals(currentUser.getId())) {
             throw new UnauthorizedActionException("You can only upload photos for your own damage reports");
         }
-        report.setDamagePhotoUrl(request.getDamagePhotoUrl());
+        String photoUrl = cloudinaryService.uploadImage(file, DAMAGE_REPORT_PHOTO_FOLDER);
+        report.setDamagePhotoUrl(photoUrl);
         return DamageReportResponse.from(damageReportRepository.save(report));
     }
 

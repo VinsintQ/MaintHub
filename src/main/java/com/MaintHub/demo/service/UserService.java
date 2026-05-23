@@ -27,6 +27,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.security.core.Authentication;
+
 @Service
 public class UserService {
     private final UserRepository userRepository;
@@ -65,7 +66,11 @@ public class UserService {
                     .orElseThrow(() -> new RuntimeException("ROLE_STAFF does not exist"));
             userObject.getRoles().add(userRole);
             User result = userRepository.save(userObject);
-            sendConfirmationEmail(userObject);
+            try {
+                sendConfirmationEmail(userObject);
+            } catch (RuntimeException e) {
+                System.out.println("Registration saved, but verification email could not be sent: " + e.getMessage());
+            }
             return result;
         }else {
             throw new InformationExistException("User already exist");
