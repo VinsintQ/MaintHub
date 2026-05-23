@@ -13,7 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(path = "/auth/users")
+@RequestMapping(path = {"/auth/users", "/api/auth"})
 public class AuthController {
     private UserService userService;
 
@@ -48,7 +48,7 @@ public class AuthController {
         }
     }
 
-    @GetMapping("/register/verify")
+    @GetMapping({"/register/verify", "/verify-email"})
     public void validate(@RequestParam String token){
         System.out.println("calling get verify  ========>");
         userService.validate(token);
@@ -76,6 +76,21 @@ public class AuthController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> promoteUserToAdmin(@PathVariable Long userId) {
         userService.promoteUserToAdmin(userId);
+        return ResponseEntity.ok("User promoted to ADMIN");
+    }
+
+
+    @PutMapping("/{userId}/promote-To-Technician")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> promoteUserToTechnician(@PathVariable Long userId) {
+        userService.promoteUserToTechnician(userId);
+        return ResponseEntity.ok("User promoted to ADMIN");
+    }
+
+    @PutMapping("/{userId}/promote-To-Inspector")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<String> promoteUserToInspector(@PathVariable Long userId) {
+        userService.promoteUserToInspector(userId);
         return ResponseEntity.ok("User promoted to ADMIN");
     }
 
