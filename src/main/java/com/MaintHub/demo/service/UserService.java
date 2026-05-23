@@ -193,4 +193,43 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public void promoteUserToTechnician(Long userId) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Role ROLETECHNICIAN = roleRepository.findByName(RoleName.ROLE_TECHNICIAN)
+                .orElseThrow(() -> new RuntimeException("TECHNICIAN role not found"));
+
+
+        boolean alreadyAdmin = user.getRoles().stream()
+                .anyMatch(role -> role.getName() == RoleName.ROLE_TECHNICIAN);
+
+        if (alreadyAdmin) {
+            throw new RuntimeException("User is already an ROLE_TECHNICIAN");
+        }
+
+        user.getRoles().add(ROLETECHNICIAN);
+        userRepository.save(user);
+    }
+
+    public void promoteUserToInspector(Long userId) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Role ROLEINSPECTOR = roleRepository.findByName(RoleName.ROLE_INSPECTOR)
+                .orElseThrow(() -> new RuntimeException("TECHNICIAN role not found"));
+
+
+        boolean alreadyAdmin = user.getRoles().stream()
+                .anyMatch(role -> role.getName() == RoleName.ROLE_INSPECTOR);
+
+        if (alreadyAdmin) {
+            throw new RuntimeException("User is already an ROLE_TECHNICIAN");
+        }
+
+        user.getRoles().add(ROLEINSPECTOR);
+        userRepository.save(user);
+    }
 }

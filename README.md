@@ -1,6 +1,6 @@
-# RepairFlow
+# MaintHub
 
-RepairFlow is an Equipment Damage and Maintenance Management System built with Spring Boot. It helps organizations track equipment, report damage, assign technicians, manage maintenance tasks, request spare parts, inspect repaired equipment, and keep a full history of equipment status changes.
+MaintHub is an Equipment Damage and Maintenance Management System built with Spring Boot. It helps organizations track equipment, report damage, assign technicians, manage maintenance tasks, request spare parts, inspect repaired equipment, and keep a full history of equipment status changes.
 
 The backend includes JWT authentication, role-based authorization, email verification, and workflow modules for staff, admins, technicians, and inspectors. The system is designed so equipment status changes happen through service workflows and are recorded automatically in status history.
 
@@ -23,7 +23,7 @@ The backend includes JWT authentication, role-based authorization, email verific
 
 ## General Approach
 
-The project was built around the existing authentication system instead of replacing it. The auth layer already handled registration, login, JWT generation, role-based access, and email verification, so the maintenance modules were added around that structure. Existing users and roles were extended to support the RepairFlow workflow roles: admin, staff, technician, and inspector.
+The project was built around the existing authentication system instead of replacing it. The auth layer already handled registration, login, JWT generation, role-based access, and email verification, so the maintenance modules were added around that structure. Existing users and roles were extended to support the MaintHub workflow roles: admin, staff, technician, and inspector.
 
 The main backend design uses a service-first workflow approach. Controllers receive DTOs, services enforce business rules, repositories handle persistence, and entities model the relationships between equipment, reports, tasks, inspections, spare part requests, and status history. Equipment status is not meant to be changed directly from controllers; service methods update it and create an `EquipmentStatusHistory` record at the same time.
 
@@ -48,10 +48,10 @@ Default seeded users:
 
 | Role | Email | Password |
 | --- | --- | --- |
-| Admin | admin@repairflow.com | Password123! |
-| Staff | staff@repairflow.com | Password123! |
-| Technician | technician@repairflow.com | Password123! |
-| Inspector | inspector@repairflow.com | Password123! |
+| Admin | admin@mainthub.com | Password123! |
+| Staff | staff@mainthub.com | Password123! |
+| Technician | technician@mainthub.com | Password123! |
+| Inspector | inspector@mainthub.com | Password123! |
 
 Seeded equipment categories:
 
@@ -119,6 +119,6 @@ PostgreSQL is exposed on host port `5433` by default.
 
 Import this file into Postman:
 
-[RepairFlow Postman Collection](./postman/RepairFlow.postman_collection.json)
+[MaintHub Postman Collection](./postman/MaintHub.postman_collection.json)
 
 The collection uses `{{baseUrl}}` and `{{jwtToken}}`. After running the login request, the JWT token is saved automatically into the collection variables.

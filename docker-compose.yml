@@ -1,7 +1,7 @@
 services:
   db:
     image: postgres:16-alpine
-    container_name: repairflow-db
+    container_name: mainthub-db
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-repairflow}
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
@@ -20,7 +20,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: repairflow-api
+    container_name: mainthub-api
     depends_on:
       db:
         condition: service_healthy
@@ -38,6 +38,9 @@ services:
       MAIL_USERNAME: ${MAIL_USERNAME:-}
       MAIL_PASSWORD: ${MAIL_PASSWORD:-}
       MAIL_FROM: ${MAIL_FROM:-}
+      CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME:-doopsfdwr}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY:-638859748674885}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET:-5p7XFXAWHdC9sxox14WByNbAVmE}
     ports:
       - "${APP_PORT:-8080}:8080"
     restart: unless-stopped

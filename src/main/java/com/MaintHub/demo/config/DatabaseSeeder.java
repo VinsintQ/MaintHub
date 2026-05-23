@@ -51,19 +51,28 @@ public class DatabaseSeeder implements CommandLineRunner {
     }
 
     private void seedUsers() {
-        createUserIfMissing("System Admin", "admin@repairflow.com", RoleName.ROLE_ADMIN);
-        createUserIfMissing("Staff User", "staff@repairflow.com", RoleName.ROLE_STAFF);
-        createUserIfMissing("Technician User", "technician@repairflow.com", RoleName.ROLE_TECHNICIAN);
-        createUserIfMissing("Inspector User", "inspector@repairflow.com", RoleName.ROLE_INSPECTOR);
+        createUserIfMissing("System Admin", "admin@mainthub.com", "admin@repairflow.com", RoleName.ROLE_ADMIN);
+        createUserIfMissing("Staff User", "staff@mainthub.com", "staff@repairflow.com", RoleName.ROLE_STAFF);
+        createUserIfMissing("Technician User", "technician@mainthub.com", "technician@repairflow.com", RoleName.ROLE_TECHNICIAN);
+        createUserIfMissing("Inspector User", "inspector@mainthub.com", "inspector@repairflow.com", RoleName.ROLE_INSPECTOR);
     }
 
-    private void createUserIfMissing(String userName, String email, RoleName roleName) {
+    private void createUserIfMissing(String userName, String email, String legacyEmail, RoleName roleName) {
         if (userRepository.existsByEmailAddress(email)) {
             return;
         }
 
         Role role = roleRepository.findByName(roleName)
                 .orElseThrow(() -> new IllegalStateException("Missing seed role: " + roleName.name()));
+
+        User legacyUser = userRepository.findUserByEmailAddress(legacyEmail);
+        if (legacyUser != null) {
+            legacyUser.setUserName(userName);
+            legacyUser.setEmailAddress(email);
+            legacyUser.getRoles().add(role);
+            userRepository.save(legacyUser);
+            return;
+        }
 
         User user = new User();
         user.setUserName(userName);

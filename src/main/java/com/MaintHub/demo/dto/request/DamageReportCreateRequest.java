@@ -15,6 +15,4 @@ public class DamageReportCreateRequest {
 
     @NotNull
     private DamageSeverity severity;
-
-    private String damagePhotoUrl;
 }
