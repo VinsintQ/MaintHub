@@ -23,7 +23,6 @@ public class MaintenanceTaskResponse {
     private String equipmentName;
     private String equipmentSerialNumber;
     private UserSummaryResponse technician;
-    private UserSummaryResponse costApprovedBy;
     private Long inspectionId;
 
     public static MaintenanceTaskResponse from(MaintenanceTask task) {
@@ -42,7 +41,6 @@ public class MaintenanceTaskResponse {
         response.setEquipmentName(task.getEquipment().getName());
         response.setEquipmentSerialNumber(task.getEquipment().getSerialNumber());
         response.setTechnician(UserSummaryResponse.from(task.getTechnician()));
-        response.setCostApprovedBy(UserSummaryResponse.from(task.getCostApprovedBy()));
         if (task.getInspection() != null) {
             response.setInspectionId(task.getInspection().getId());
         }

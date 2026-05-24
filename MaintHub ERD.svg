@@ -1,0 +1,237 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1250" viewBox="0 0 1600 1250">
+  <defs>
+    <style>
+      .bg { fill: #f7f9fb; }
+      .title { font: 700 34px Arial, sans-serif; fill: #152238; }
+      .subtitle { font: 400 16px Arial, sans-serif; fill: #5b6678; }
+      .entity { fill: #ffffff; stroke: #26384f; stroke-width: 2; rx: 10; }
+      .entity-header { fill: #26384f; }
+      .entity-name { font: 700 17px Arial, sans-serif; fill: #ffffff; }
+      .field { font: 13px Consolas, monospace; fill: #182536; }
+      .pk { fill: #0f766e; font-weight: 700; }
+      .fk { fill: #9a3412; font-weight: 700; }
+      .rel { stroke: #637083; stroke-width: 2; fill: none; marker-end: url(#arrow); }
+      .rel-label { font: 12px Arial, sans-serif; fill: #344255; }
+      .note { fill: #fff7ed; stroke: #f97316; stroke-width: 1.5; rx: 10; }
+      .note-text { font: 14px Arial, sans-serif; fill: #7c2d12; }
+    </style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#637083"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" width="1600" height="1250"/>
+  <text x="60" y="60" class="title">MaintHub ERD</text>
+  <text x="60" y="88" class="subtitle">Equipment damage, maintenance, inspections, spare parts, status history, and JWT auth users/roles</text>
+
+  <!-- USER -->
+  <g transform="translate(60,130)">
+    <rect class="entity" width="260" height="255"/>
+    <rect class="entity-header" width="260" height="44" rx="10"/>
+    <text x="18" y="28" class="entity-name">USER</text>
+    <text x="18" y="70" class="field pk">PK id</text>
+    <text x="18" y="95" class="field">userName</text>
+    <text x="18" y="120" class="field">emailAddress UNIQUE</text>
+    <text x="18" y="145" class="field">password</text>
+    <text x="18" y="170" class="field">accountVerified</text>
+    <text x="18" y="195" class="field">isActive</text>
+    <text x="18" y="220" class="field">createdAt</text>
+  </g>
+
+  <!-- ROLE -->
+  <g transform="translate(60,455)">
+    <rect class="entity" width="260" height="135"/>
+    <rect class="entity-header" width="260" height="44" rx="10"/>
+    <text x="18" y="28" class="entity-name">ROLE</text>
+    <text x="18" y="70" class="field pk">PK id</text>
+    <text x="18" y="95" class="field">name</text>
+    <text x="18" y="120" class="field">ADMIN / STAFF / TECHNICIAN / INSPECTOR</text>
+  </g>
+
+  <!-- USER_ROLE -->
+  <g transform="translate(380,455)">
+    <rect class="entity" width="230" height="120"/>
+    <rect class="entity-header" width="230" height="44" rx="10"/>
+    <text x="18" y="28" class="entity-name">USER_ROLE</text>
+    <text x="18" y="72" class="field fk">FK user_id</text>
+    <text x="18" y="98" class="field fk">FK role_id</text>
+  </g>
+
+  <!-- SECURE_TOKEN -->
+  <g transform="translate(380,130)">
+    <rect class="entity" width="250" height="170"/>
+    <rect class="entity-header" width="250" height="44" rx="10"/>
+    <text x="18" y="28" class="entity-name">SECURE_TOKEN</text>
+    <text x="18" y="70" class="field pk">PK id</text>
+    <text x="18" y="95" class="field">token</text>
+    <text x="18" y="120" class="field">expireAt</text>
+    <text x="18" y="145" class="field fk">FK user_id</text>
+  </g>
+
+  <!-- EQUIPMENT_CATEGORY -->
+  <g transform="translate(690,130)">
+    <rect class="entity" width="295" height="205"/>
+    <rect class="entity-header" width="295" height="44" rx="10"/>
+    <text x="18" y="28" class="entity-name">EQUIPMENT_CATEGORY</text>
+    <text x="18" y="70" class="field pk">PK id</text>
+    <text x="18" y="95" class="field">name</text>
+    <text x="18" y="120" class="field">description</text>
+    <text x="18" y="145" class="field">requiresRegularInspection</text>
+    <text x="18" y="170" class="field">inspectionIntervalDays</text>
+  </g>
+
+  <!-- EQUIPMENT -->
+  <g transform="translate(1070,95)">
+    <rect class="entity" width="310" height="305"/>
+    <rect class="entity-header" width="310" height="44" rx="10"/>
+    <text x="18" y="28" class="entity-name">EQUIPMENT</text>
+    <text x="18" y="70" class="field pk">PK id</text>
+    <text x="18" y="95" class="field">name</text>
+    <text x="18" y="120" class="field">serialNumber UNIQUE</text>
+    <text x="18" y="145" class="field">description</text>
+    <text x="18" y="170" class="field">location</text>
+    <text x="18" y="195" class="field">status</text>
+    <text x="18" y="220" class="field">conditionLevel</text>
+    <text x="18" y="245" class="field">purchaseDate</text>
+    <text x="18" y="270" class="field">warrantyExpiryDate</text>
+    <text x="18" y="295" class="field fk">FK category_id</text>
+  </g>
+
+  <!-- DAMAGE_REPORT -->
+  <g transform="translate(690,455)">
+    <rect class="entity" width="305" height="250"/>
+    <rect class="entity-header" width="305" height="44" rx="10"/>
+    <text x="18" y="28" class="entity-name">DAMAGE_REPORT</text>
+    <text x="18" y="70" class="field pk">PK id</text>
+    <text x="18" y="95" class="field">description</text>
+    <text x="18" y="120" class="field">severity</text>
+    <text x="18" y="145" class="field">status</text>
+    <text x="18" y="170" class="field">damagePhotoUrl</text>
+    <text x="18" y="195" class="field">reportedAt</text>
+    <text x="18" y="220" class="field fk">FK equipment_id</text>
+    <text x="18" y="245" class="field fk">FK reported_by_id</text>
+  </g>
+
+  <!-- MAINTENANCE_TASK -->
+  <g transform="translate(1070,475)">
+    <rect class="entity" width="330" height="330"/>
+    <rect class="entity-header" width="330" height="44" rx="10"/>
+    <text x="18" y="28" class="entity-name">MAINTENANCE_TASK</text>
+    <text x="18" y="70" class="field pk">PK id</text>
+    <text x="18" y="95" class="field">status</text>
+    <text x="18" y="120" class="field">repairNotes</text>
+    <text x="18" y="145" class="field">estimatedCost</text>
+    <text x="18" y="170" class="field">actualCost</text>
+    <text x="18" y="195" class="field">repairCostApproved</text>
+    <text x="18" y="220" class="field">startedAt / completedAt</text>
+    <text x="18" y="245" class="field fk">FK damage_report_id</text>
+    <text x="18" y="270" class="field fk">FK equipment_id</text>
+    <text x="18" y="295" class="field fk">FK technician_id</text>
+    <text x="18" y="320" class="field fk">FK cost_approved_by_id</text>
+  </g>
+
+  <!-- INSPECTION -->
+  <g transform="translate(690,790)">
+    <rect class="entity" width="305" height="230"/>
+    <rect class="entity-header" width="305" height="44" rx="10"/>
+    <text x="18" y="28" class="entity-name">INSPECTION</text>
+    <text x="18" y="70" class="field pk">PK id</text>
+    <text x="18" y="95" class="field">result</text>
+    <text x="18" y="120" class="field">notes</text>
+    <text x="18" y="145" class="field">inspectedAt</text>
+    <text x="18" y="170" class="field">nextInspectionDate</text>
+    <text x="18" y="195" class="field fk">FK equipment_id</text>
+    <text x="18" y="220" class="field fk">FK maintenance_task_id / inspector_id</text>
+  </g>
+
+  <!-- SPARE_PART_REQUEST -->
+  <g transform="translate(1070,860)">
+    <rect class="entity" width="330" height="250"/>
+    <rect class="entity-header" width="330" height="44" rx="10"/>
+    <text x="18" y="28" class="entity-name">SPARE_PART_REQUEST</text>
+    <text x="18" y="70" class="field pk">PK id</text>
+    <text x="18" y="95" class="field">partName</text>
+    <text x="18" y="120" class="field">quantity</text>
+    <text x="18" y="145" class="field">estimatedPrice</text>
+    <text x="18" y="170" class="field">status</text>
+    <text x="18" y="195" class="field">requestedAt</text>
+    <text x="18" y="220" class="field fk">FK maintenance_task_id</text>
+    <text x="18" y="245" class="field fk">FK requested_by_id / approved_by_id</text>
+  </g>
+
+  <!-- STATUS_HISTORY -->
+  <g transform="translate(380,790)">
+    <rect class="entity" width="250" height="230"/>
+    <rect class="entity-header" width="250" height="44" rx="10"/>
+    <text x="18" y="28" class="entity-name">EQUIPMENT_STATUS_HISTORY</text>
+    <text x="18" y="70" class="field pk">PK id</text>
+    <text x="18" y="95" class="field">oldStatus</text>
+    <text x="18" y="120" class="field">newStatus</text>
+    <text x="18" y="145" class="field">reason</text>
+    <text x="18" y="170" class="field">changedAt</text>
+    <text x="18" y="195" class="field fk">FK equipment_id</text>
+    <text x="18" y="220" class="field fk">FK changed_by_id</text>
+  </g>
+
+  <!-- relationships -->
+  <path class="rel" d="M 320 255 C 350 255, 350 215, 380 215"/>
+  <text x="330" y="235" class="rel-label">1 user has many tokens</text>
+
+  <path class="rel" d="M 320 520 L 380 520"/>
+  <text x="330" y="505" class="rel-label">roles join</text>
+
+  <path class="rel" d="M 190 385 C 190 430, 380 430, 495 455"/>
+  <text x="240" y="425" class="rel-label">many-to-many</text>
+
+  <path class="rel" d="M 985 230 L 1070 230"/>
+  <text x="1000" y="215" class="rel-label">1 category -> many equipment</text>
+
+  <path class="rel" d="M 1070 300 C 1030 390, 1000 480, 995 560"/>
+  <text x="1002" y="428" class="rel-label">equipment has reports</text>
+
+  <path class="rel" d="M 320 300 C 455 435, 560 520, 690 570"/>
+  <text x="430" y="450" class="rel-label">staff reports damage</text>
+
+  <path class="rel" d="M 995 590 L 1070 625"/>
+  <text x="1002" y="610" class="rel-label">0..1 task</text>
+
+  <path class="rel" d="M 1225 400 L 1225 475"/>
+  <text x="1240" y="445" class="rel-label">equipment repaired by tasks</text>
+
+  <path class="rel" d="M 320 225 C 660 360, 880 445, 1070 635"/>
+  <text x="500" y="345" class="rel-label">technician assigned</text>
+
+  <path class="rel" d="M 1235 805 C 1180 845, 1090 865, 995 900"/>
+  <text x="1025" y="850" class="rel-label">completed task inspected once</text>
+
+  <path class="rel" d="M 1225 805 L 1225 860"/>
+  <text x="1240" y="840" class="rel-label">task needs spare parts</text>
+
+  <path class="rel" d="M 320 260 C 515 620, 590 790, 690 910"/>
+  <text x="430" y="700" class="rel-label">inspector creates inspection</text>
+
+  <path class="rel" d="M 1070 360 C 1005 610, 950 735, 905 790"/>
+  <text x="940" y="750" class="rel-label">equipment inspections</text>
+
+  <path class="rel" d="M 1070 385 C 910 705, 720 835, 630 890"/>
+  <text x="760" y="755" class="rel-label">status changes tracked</text>
+
+  <path class="rel" d="M 320 340 C 355 560, 375 710, 430 790"/>
+  <text x="345" y="720" class="rel-label">changed by user</text>
+
+  <path class="rel" d="M 320 300 C 630 740, 850 940, 1070 990"/>
+  <text x="585" y="970" class="rel-label">requested/approved by users</text>
+
+  <g transform="translate(60,1090)">
+    <rect class="note" width="715" height="95"/>
+    <text x="18" y="32" class="note-text">Workflow: STAFF reports damage -> ADMIN reviews/assigns -> TECHNICIAN repairs -> INSPECTOR inspects.</text>
+    <text x="18" y="58" class="note-text">Equipment status history is written automatically whenever equipment status changes.</text>
+    <text x="18" y="84" class="note-text">Soft delete rule: equipment is retired instead of physically deleted.</text>
+  </g>
+
+  <g transform="translate(850,1090)">
+    <rect class="note" width="530" height="95"/>
+    <text x="18" y="32" class="note-text">Key status path: ACTIVE -> DAMAGED -> UNDER_MAINTENANCE -> PENDING_INSPECTION -> ACTIVE.</text>
+    <text x="18" y="58" class="note-text">Failed inspection returns equipment to maintenance; unsafe inspection marks equipment UNSAFE.</text>
+  </g>
+</svg>
